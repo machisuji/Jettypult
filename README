@@ -1,0 +1,7 @@
+Built using sbt 0.11
+--------------------
+
+* checkout
+* (adjust Launcher.scala according to your needs)
+* launch webapp
+** > sbt "run my-webapp.war"
