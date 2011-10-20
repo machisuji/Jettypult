@@ -17,7 +17,17 @@ import org.eclipse.jetty.webapp.WebAppContext
 
 object Launcher {
 
+  def printUsage {
+    println("\nJettypult launches a set of web applications given either as WAR files or directories.")
+    println("Note: Jettypult requires jetty-server and jetty-webapp in version 7.4 to work.\n")
+    println("Usage: jettypult.Launcher [-p <port[,...]>] <webapp> [<webapp> ...]\n")
+  }
+
   def main(args: Array[String]) {
+    if (args.isEmpty || is(args, "h", "help")) {
+      return printUsage
+    }
+    
     val ports = {
       val numbers = get(args, "p", "port").map(_.split(",").toList).map(_.map(_.toInt)) getOrElse List(8080)
       numbers.toStream ++ Stream.from(numbers.last + 1)
@@ -44,6 +54,9 @@ object Launcher {
     if ((opt == "-"+shortName) || (opt == "--"+longName)) Some(value)
     else None
   }.toList.headOption
+
+  def is(args: Array[String], shortName: String, longName: String = null) =
+    args.exists(arg => arg.startsWith("-") && arg.contains(shortName)) || args.exists("--"+longName ==)
 
   def isWebApp(file: File) = file.exists && (file.getName.endsWith(".war") || file.list.contains("WEB-INF"))
 
